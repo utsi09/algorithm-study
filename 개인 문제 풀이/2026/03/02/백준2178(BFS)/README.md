@@ -11,7 +11,7 @@ https://www.acmicpc.net/problem/2178
 111011
 위와 같이 입력이 따닥따닥 붙어있는 경우는 **scanf**로 입력처리
 
-'''cpp
+```cpp
 for(int i=0; i<end_y; i++){
         for(int j=0; j<end_x; j++){
             scanf("%1d", &adj[i][j]);
