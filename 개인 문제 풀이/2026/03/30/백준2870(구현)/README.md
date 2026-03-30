@@ -1,7 +1,7 @@
 https://www.acmicpc.net/problem/2870
 
 ---
-#내생각
+# 내생각
 ```cpp
 if (s[j] < 65) ret+=s[j];
 ```
