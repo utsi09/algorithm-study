@@ -2,6 +2,8 @@ https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/microbial-resea
 
 ---
 
+소요시간 : 6시간
+
 이전 유형에서는 직사각형을 유지하기 위해 구조체로 w, h, r, c 이런식으로 저장했는데
 
 이번 유형은 갉아먹히고 언제든 상태가 변할수있어서 
