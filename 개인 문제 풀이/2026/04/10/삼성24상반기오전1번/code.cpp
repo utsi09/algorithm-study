@@ -6,8 +6,6 @@ int adj[6][6];
 int visited[6][6];
 queue<int> tre_q;
 
-
-
 struct rot_map{
     int tre_num; //adj에서 보물 개수
     int rotate; //회전수
@@ -83,11 +81,8 @@ void rotate(int i, int j, int rot){
                 tmp_rot[c][size_n-r-1] = rotate_map[r][c];
             }
         }
-        //cout << rot << endl;
         memcpy(rotate_map, tmp_rot, sizeof(rotate_map)); //재회전해야하니까 
     }
-    //debug_rot_map();
-    //fill(&tmp_map.my_adj[0][0], &tmp_map.my_adj[0][0]+6*6, 0);
     memcpy(tmp_map.my_adj, adj, sizeof(tmp_map.my_adj)); //원본맵 복사
     for(int r=0; r<3; r++){
         for(int c=0; c<3; c++){
@@ -97,8 +92,6 @@ void rotate(int i, int j, int rot){
     }
     //상태 업데이트
     update_tmp(i+1, j+1, rot); //행, 열 , 회전수 넣기, 보물수 0초기화
-    //debug_tmp_map();
-    //memcpy(rotate_map, tmp_rot, sizeof(rotate_map));
 }
 
 
@@ -113,8 +106,6 @@ void debug_tmp_map(){
     cout << "-----debug_tmp_map ----\n";
 
 }
-
-
 
 void BFS(int i, int j, bool is_real){
     queue<pair<int,int>> q;
@@ -146,8 +137,6 @@ void BFS(int i, int j, bool is_real){
                 tmp_map.my_adj[p.first][p.second] = 0; //0으로 팝
             }
         }
-        //공통
-        //cout << now_cnt << "nowcnt+" << endl;
         tmp_map.tre_num += now_cnt; //보물개수 증가
     }
 }
@@ -165,7 +154,6 @@ void simulate(){ //tmp map 시뮬레이션 - 27번
         }
     }
     //best 와 비교후 업데이트
-    
     if(tmp_map.tre_num > best_map.tre_num){
         update_best(); //best 업데이트
     }
@@ -193,11 +181,7 @@ void explore(){
             for(int rot=1; rot<=3; rot++){
                 rotate(i-1,j-1,rot);
                 //여기서 시뮬레이션 돌리기
-                simulate();
-                // 베스트 보물들 pop
-                //debug_tmp_map();
-                //debug_rot_map();
-                
+                simulate(); 
             }
             
         }
@@ -239,13 +223,11 @@ void fill_map(){
             }
         }
     }
-    //cout << tmp_map.tre_num << " 3 tre\n";
 }
 
 int main(){
     input();
     for(int turn = 0; turn < k; turn++){ //k만큼 탐사 반복
-        //cout << " --restart \n";
         init(); //best 초기화
         tmp_init(true); //tre 초기화
         //탐사진행
@@ -254,19 +236,12 @@ int main(){
         // 베스트맵으로 진행 2. 유물획득
         memcpy(tmp_map.my_adj, best_map.my_adj, sizeof(tmp_map.my_adj)); //best를 템프로
         best_map.tre_num = 0;
-        while(1){ //맵은 확정, 계속 pop하기
-            //tmp_init(false); //tre 초기화
-            
+        while(1){ //맵은 확정, 계속 pop하기         
             tmp_map.tre_num = 0;
             pop_map(); //0 처리
-            //debug_tmp_map();
             if(tmp_map.tre_num == 0) break;
-            //cout << tmp_map.tre_num << " : tmp tre!!" << endl;
-            //cout << best_map.tre_num << " : tre!!" << endl;
             best_map.tre_num += tmp_map.tre_num; //보물개수 갱신
             fill_map();
-            //cout << best_map.tre_num << " : 2 tre!!" << endl;
-            //debug_tmp_map();
         }
         
         cout << best_map.tre_num << " "; //누적
