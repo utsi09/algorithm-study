@@ -1,3 +1,7 @@
+https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/perfume-workshop/description
+
+---
+
 삼성 기출 1번만 풀다가 dp가 주로 나오는 2번 문제도 풀어보았다
 
 여러 작업중에 dp를 활용하는 4번은 오히려 재귀함수+메모이제이션이 손에 붙어서 쉽게 돼었는데
