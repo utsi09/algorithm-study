@@ -1,4 +1,4 @@
-cpp
+
 ```
 So when I die (the [first] I will see in (heaven) is a score list).
 [ first in ] ( first out ).
@@ -11,8 +11,8 @@ Help( I[m being held prisoner in a fortune cookie factory)].
 ```
 
 이문제와 같이 입력값이 공백을 포함하는 string 이지만 한줄로 처리해야 하면 
-cpp
-```
+
+cpp```
 getline(cin,s)
 ```
 
