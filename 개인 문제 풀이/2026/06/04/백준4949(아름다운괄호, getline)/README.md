@@ -12,7 +12,7 @@ Help( I[m being held prisoner in a fortune cookie factory)].
 
 이문제와 같이 입력값이 공백을 포함하는 string 이지만 한줄로 처리해야 하면 
 
-```
+```cpp
 getline(cin,s)
 ```
 
