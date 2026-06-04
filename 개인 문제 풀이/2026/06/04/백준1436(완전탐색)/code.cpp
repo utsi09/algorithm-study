@@ -30,7 +30,6 @@ void make_table(int n){
 
 int main(){
     
-    sort(devel.begin(), devel.end());
     int n;
     cin >> n;
     make_table(n);
