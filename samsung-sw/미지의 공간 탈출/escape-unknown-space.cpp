@@ -21,62 +21,12 @@ struct Node {
     int div;
 };
 
-
-void db_visited_map(){
-    for(int d=0; d<3; d++){
-        if(d==0){
-            for(int i=0; i<m; i++){
-                for(int j=0; j<m; j++){
-                    cout << visited[0][i][j] << " ";
-                }
-                cout << '\n';
-            }
-        }
-        if(d==1){
-            for(int i=0; i<m; i++){
-                for(int j=0; j<m*4; j++){
-                    cout << visited[1][i][j] << " ";
-                }
-                cout << '\n';
-            }
-        }
-        if(d==2){
-            for(int i=0; i<n; i++){
-                for(int j=0; j<n; j++){
-                    cout << visited[2][i][j] << " ";
-                }
-                cout << '\n';
-            }
-        }
-    }
-}
-
 struct abnormal //이상 현상
 {
     int r,c,d,v;
 };
 
 vector<abnormal> abnos;
-
-void db_ab_map(){
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            cout << ab_map[i][j] << " ";
-        }
-        cout << '\n';
-    }
-}
-
-void db_mid_map(){
-    for(int i=0; i<m; i++){
-        for(int j=0; j<m*4; j++){
-            cout << mid[i][j] << " ";
-        }
-        cout << '\n';
-    }
-    cout << s_i<<","<< s_j << "\n";
-}
-
 
 int bfs(int i, int j, int div){ //div 0 : top, 1: mid, 2: bot
     int n_i, n_j, cur_dv;
@@ -113,7 +63,6 @@ int bfs(int i, int j, int div){ //div 0 : top, 1: mid, 2: bot
                     nx = (m-1)-n_j + 2 * m;
                     nd = 1;
                 }
-
                 if(nd == 1){
                     if(mid[ny][nx] == 1) continue;
                 }
@@ -121,9 +70,7 @@ int bfs(int i, int j, int div){ //div 0 : top, 1: mid, 2: bot
                     if(ny < 0 || nx < 0 || ny >= m || nx >= m) continue;
                     if(top[ny][nx] == 1) continue;
                 }
-
                 if(visited[nd][ny][nx] != -1) continue;
-
                 visited[nd][ny][nx] = visited[cur_dv][n_i][n_j] + 1;
                 q.push({ny, nx, nd});
             }
@@ -134,9 +81,7 @@ int bfs(int i, int j, int div){ //div 0 : top, 1: mid, 2: bot
                 else if(nx >= 4 * m){
                     nx = 0;
                 }
-
                 int nt = visited[cur_dv][n_i][n_j] + 1;
-
                 if(ny >= m){ 
                     // 옆에서 바닥
                     int face = nx / m;
@@ -171,7 +116,6 @@ int bfs(int i, int j, int div){ //div 0 : top, 1: mid, 2: bot
                     else if(face == 1){ // 0
                         ny = m-1 - k; //
                         nx = m-1;
-                        
                     }
                     else if(face == 2){ // 2
                         ny = 0;
@@ -182,7 +126,6 @@ int bfs(int i, int j, int div){ //div 0 : top, 1: mid, 2: bot
                         nx = 0;
                     }
                 }
-
                 if(nd == 0){
                     if(top[ny][nx] == 1) continue;
                 }
@@ -191,7 +134,6 @@ int bfs(int i, int j, int div){ //div 0 : top, 1: mid, 2: bot
                     if(mid[ny][nx] == 1) continue;
                 }
                 else if(nd == 2){
-                    //cout << ny << "," << nx << " : arrived \n";
                     if(ny < 0 || nx < 0 || ny >= n || nx >= n) continue;
                     if(bot[ny][nx] == 1 || bot[ny][nx] == 3) continue;
                     if(nt >= ab_map[ny][nx]) continue;
@@ -256,8 +198,6 @@ int main() {
             }
         }
     } //임시로 시간의 공간 저장
-
-    //db_mid_map();
     
     for(int ab=0; ab<f; ab++){
         abnormal tmp_ab;
@@ -284,6 +224,5 @@ int main() {
     }
     
     cout << bfs(start_i, start_j, 0) << '\n';
-    //db_visited_map();
     return 0;
 }
