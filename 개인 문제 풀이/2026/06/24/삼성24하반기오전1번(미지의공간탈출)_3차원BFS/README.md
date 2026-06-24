@@ -1,3 +1,7 @@
+https://www.codetree.ai/ko/frequent-problems/samsung-sw/problems/escape-unknown-space/description
+
+---
+
 <img width="1400" height="876" alt="Image" src="https://github.com/user-attachments/assets/62a748d7-ea3c-48a6-895e-5860ae055b5e" />
 
 다른 문제들보다 빡셌는데 2차원 BFS 만 풀다가 3차원 BFS를 마주하니까 어떻게 접근해야할지 몰랐다
