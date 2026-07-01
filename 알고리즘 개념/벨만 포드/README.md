@@ -13,7 +13,7 @@
 벨만 포드는 한번 더 돌렸을때 변화가 생기면 (최단거리가 바뀔 경우는 음수 사이클이 있을 때니까) 음수 사이클이 있다고 판단한다.
 
 
-cpp```
+```cpp
 for(int i=0; i<n; i++){
         for(int here = 1; here <= n; here++){
             for(pair<int,int> arrow : adj[here]){
