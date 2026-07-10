@@ -4,8 +4,6 @@
 
 ## 저장소 활동
 
-[📊 algorithm-study 주간 커밋 그래프](https://github.com/utsi09/algorithm-study/graphs/commit-activity)
-
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/utsi09/algorithm-study?label=최근%20한달%20커밋)
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/utsi09/algorithm-study?label=마지막%20업로드)
