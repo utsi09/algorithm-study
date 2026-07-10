@@ -10,7 +10,6 @@
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/y/utsi09/algorithm-study?label=최근%201년%20커밋)
 
-[이 저장소의 커밋 기록 보기](https://github.com/utsi09/algorithm-study/commits)
 
 ## 문제 풀이
 
