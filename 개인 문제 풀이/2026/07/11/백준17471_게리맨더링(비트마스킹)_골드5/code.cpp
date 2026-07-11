@@ -41,8 +41,7 @@ int check_adj(const vector<int>& v, int flag){
             if(visited[next]) continue;
             bool checker = false;
             for(int tmp : v){ //팀이 아니면 안감
-                if(tmp == next) checker = true;
-                break;
+                if(tmp == next) {checker = true; break;}
             }
             if(checker == false) continue;
             visited[next] = 1;
