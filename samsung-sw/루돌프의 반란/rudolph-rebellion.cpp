@@ -21,31 +21,6 @@ struct santa{
 };
 vector<santa> santas(31);
 
-void draw_map(){
-  cout << "------- map -------\n";
-  for(int i=0; i<n; i++){
-    for(int j=0; j<n; j++){
-      if(i == rr && j == rc){
-        cout << "R ";
-        adj[i][j] = 1;
-        continue;
-      }
-      bool checker = false;
-      for(int ii=0; ii<p; ii++){
-        if(i == santas[ii].sr && j == santas[ii].sc){
-          cout << "S ";
-          adj[i][j] = 2;
-          checker = true;
-          break;
-        }
-      }
-      if(checker == false) cout << "0 ";
-    }
-    cout << '\n';
-  }
-
-  cout << "------- map -------\n";
-}
 
 //가장 가까운 산타의 idx 반환
 int get_idx(){ 
@@ -61,7 +36,6 @@ int get_idx(){
       best_idx = idx;
       best_r = s.sr;
       best_c = s.sc;
-      //cout << s.sr << "," << s.sc << ": changed target santa & " << best_ret << " is distance \n";
       continue;
     }
     else if(best_ret == this_dis){
@@ -71,7 +45,6 @@ int get_idx(){
       best_idx = idx;
       best_r = s.sr;
       best_c = s.sc;
-      //cout << s.sr << "vs" << s.sc << ": changed target santa & " << best_ret << " is distance \n";
     }
   }
   return best_idx;
@@ -83,8 +56,6 @@ int get_d(int ny, int nx, int idx){
 }
 
 int get_d_from_s(int ny, int nx){
-    // cout << rr << "," << rc << " vs " << ny << "," << nx <<'\n';
-    // cout << (rr - ny)*(rr - ny) << "+" << (rc - nx)*(rc - nx) << '\n';
     return (rr - ny)*(rr - ny) + (rc - nx)*(rc - nx);
 }
 
@@ -104,7 +75,6 @@ void rtos_boom(int dd, int idx, int flag){
   if(s.sr < 0 || s.sc <0 || s.sr >= n || s.sc >= n){
     s.is_die = true;
     check_die++;
-    //cout<< check_die << " : died \n";
     return;
   }
   for(int i=0; i<p; i++){
@@ -127,16 +97,9 @@ void move_r(){
     int this_d = get_d(ny, nx, idx);
 
     if(best_dis > this_d){
-      //cout << this_d << " : this distance \n";
       best_dis = this_d;
       best_dd = dd;
     }
-    // if(best_dis == this_d){
-    //     if(dy[best_dd] > dy[dd]) continue; //행이 더 크면 무시
-    //     if(dy[best_dd] == dy[dd] && dx[best_dd] > dx[dd]) continue;
-    //     best_dis = this_d;
-    //     best_dd = dd;
-    // }
   }
   if(best_dd != -1){ //실제 이동
     rr += dy[best_dd];
@@ -152,49 +115,12 @@ void move_r(){
 
 }
 
-// void bfs(){
-//     fill(&visited[0][0], &visited[0][0] + 51*51, 0);
-//     visited[rr][rc] = 1;
-//     queue<pair<int,int>> q;
-//     q.push({rr,rc});
-//     while(q.size()){
-//         int ii = q.front().first;
-//         int jj = q.front().second;
-//         q.pop();
-//         for(int dd=0; dd<4; dd++){
-//             int ny = ii + dy2[dd];
-//             int nx = jj + dx2[dd];
-//             if(ny<0 || nx<0 || ny>=n || nx>=n) continue;
-
-//             if(visited[ny][nx]) {
-//                 //cout << ny <<"," <<nx<< "is cut!\n";
-//                 continue;
-//             }
-//             bool checker = false;
-//             for(int idx=0; idx<p; idx++){
-//                 if(santas[idx].sr == ny && santas[idx].sc == nx) {
-//                     //cout << "is santa seat!! :" << santas[idx].sr <<"," << santas[idx].sc <<'\n';
-//                     checker = true; 
-//                     continue;
-//                 }
-//             }
-//             if(checker) {continue;} //그곳에 산타 있으면
-//             q.push({ny,nx});
-//             visited[ny][nx] = visited[ii][jj] + 1;
-//         }
-//     }
-//     return;
-// }
-
 //산타가 루돌프한테 부딪힘 처리
 void stor_boom(int dd, int idx, int flag){
   santa& s = santas[idx];
   if(flag == 0){ //산타 직격
-    //cout << "santa boom!\n";
-    //cout << s.sr << "," << s.sc << " >> ";
     s.sr -= dy2[dd]*d;
     s.sc -= dx2[dd]*d;
-    //cout << s.sr << "," << s.sc << "\n";
     s.is_stune = t + 2;
     s.score += d;
   }
@@ -205,7 +131,6 @@ void stor_boom(int dd, int idx, int flag){
   if(s.sr < 0 || s.sc < 0 || s.sr >= n || s.sc >= n){
     s.is_die = true;
     check_die++;
-    //cout<< check_die << " : died \n";
     return;
   }
   for(int i=0; i<p; i++){
@@ -218,27 +143,12 @@ void stor_boom(int dd, int idx, int flag){
   }
 }
 
-void db_visited(){
-    cout << "------- visited map -------\n";
-    for(int i=0; i<n; i++){
-        for(int j=0; j<n; j++){
-            cout << visited[i][j] <<" ";
-        }
-        cout << '\n';
-    }
-    cout << "------- visited map -------\n";
-    return;
-}
-
 void move_s(){
     for(int i=0; i<p; i++){
         santa& s = santas[i];
-        //cout << i << " : santa idx, start!\n";
         if(s.is_die == true || s.is_stune > 0){
             continue;
         }
-        //bfs(); //코스트맵만 생성
-       // db_visited();
         int best_dd = -1;
         int men_d = get_d_from_s(s.sr, s.sc); //맨허튼 거리 가만히 있을때
         for(int dd=0; dd<4; dd++){
@@ -246,9 +156,6 @@ void move_s(){
             int nx = s.sc + dx2[dd];
             if(ny<0 || nx<0 || ny>=n || nx>=n) continue;
 
-            // int ret = visited[ny][nx];
-            // if(ret == 0) continue;
-            //cout << ny << "," << nx << " : " << ret << "but best_d is "<< best_d <<'\n';
             bool checker = false;
             for(int idx=0; idx<p; idx++){
                 if(santas[idx].sr == ny && santas[idx].sc == nx) {
@@ -264,10 +171,8 @@ void move_s(){
             } 
         }
         if(best_dd == -1) continue; //움직일수없으면
-        //cout << s.sr << "," << s.sc << " >> " << best_dd << " : best_dd & >> ";
         s.sr += dy2[best_dd];
         s.sc += dx2[best_dd];
-        //cout << s.sr << "," << s.sc << "\n";
         if(s.sr == rr && s.sc == rc) stor_boom(best_dd, i, 0); 
     }
     return;
@@ -284,21 +189,17 @@ int main(){
     cin >> num; num--;
     cin >> santas[num].sr >> santas[num].sc;
     santas[num].sr--; santas[num].sc--;
-    //cout << num << " : idx & " << santas[num].sr << "," << santas[num].sc << '\n';
   }
 
 
   for(t=0; t<m; t++){
  
-    //draw_map();
-    // 1. 루돌프의 움직임 & 
+    // 1. 루돌프의 움직임 
     move_r();
     if(check_die >= p) break; //종료
-    // 2. 
-    //draw_map();
+
     //2. 산타의 움직임
     move_s();
-    
     if(check_die >= p) break; //종료
 
     for(int i=0; i<p; i++){ //스턴 상태 확인
@@ -307,7 +208,6 @@ int main(){
             santas[i].is_stune = 0;
         }
     }
-
   }
   
   for(int i=0; i<p; i++){
@@ -315,4 +215,3 @@ int main(){
   }
   return 0;
 }
-
