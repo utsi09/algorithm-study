@@ -69,9 +69,6 @@ int main(){
 
 	for(int t=0; t<k; t++){
 		
-		//cout << "-------" << t << "------\n";
-		//cout << er <<","<<ec <<" : goal\n";
-		//cout << npcs.size() <<'\n';
 		//1. 참가자들의 움직임
 		for(npc& me : npcs){
 			if(me.is_escape) continue;
@@ -88,13 +85,11 @@ int main(){
 				}
 				//상하 우선은 자동 구현
 			}
-			//cout << me.r <<","<<me.c <<" >> ";
 			if(best_d != -1){ //움직임 처리
 				me.r += dy[best_d];
 				me.c += dx[best_d];
 				ret_d++;
 			}
-			//cout << me.r <<","<<me.c <<"\n";
 			if(me.r == er && me.c == ec){
 				me.is_escape = true;
 				cnt++;
@@ -119,7 +114,6 @@ int main(){
 			if(npcs[i].is_escape) continue;
 			int ii = npcs[i].r;
 			int jj = npcs[i].c;
-			//cout << ii <<"," << jj << ": start\n";
 			int ws = max(abs(er-ii), abs(ec-jj)) + 1; //윈도우 사이즈
 			if(ws > best_ws) continue; //정사각형 크기로 거르기
 			if(ws < best_ws){
@@ -129,7 +123,6 @@ int main(){
 				bc = INF;
 			}
 			best_ws = ws;
-			//cout <<"window size : " <<best_ws<<'\n';
 			bool exit_checker = false; //최적의 좌상단 나왔으면 true
 			for(int r=0; r<n; r++){
 				for(int c=0; c<n; c++){ //모든 행과 열을 시작점으로
@@ -141,15 +134,12 @@ int main(){
 						for(int cc=c; cc<c+ws; cc++){
 							if(cc >= n || rr >= n){
 								size_checker = false;
-								//cout << "size false\n";
 							}
 							if(rr == ii && cc == jj){
 								npc_checker = true;
-								//cout << "npc_checker = true;\n";
 							}
 							if(rr == er && cc == ec){
 								end_checker = true;
-								//cout << "end_checker = true;\n";
 							}
 						}
 					}
@@ -161,7 +151,6 @@ int main(){
 						tc = c;
 						br = tr + ws - 1;
 						bc = tc + ws - 1;
-						//cout <<"changed to : "<< tr <<"," << tc << "\n"; 
 						exit_checker = true;
 					}
 					if(exit_checker) break;
@@ -171,12 +160,8 @@ int main(){
 
 		}
 
-		//cout << tr <<"," << tc <<" ~ " << br <<"," <<bc <<" : best box\n"; 
-
-
 		// 2.2 정사각형의 회전
 		//맵 회전
-		//cout << "best ws :" << best_ws <<'\n';
 		fill(&temp[0][0], &temp[0][0]+11*11, 0);
 		
 		for(int i=tr; i<=br; i++){
