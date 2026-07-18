@@ -17,47 +17,6 @@ int potton_dx[8] = {0,0,-1,1,-1,1,-1,1};
 int strongest_potton = 0;
 int t;
 
-void db_last_adj(){
-    cout << "----- last adj map -----\n";
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            cout << last_attack[i][j] << " ";
-        }
-        cout << '\n';
-    }
-    cout << "----- map -----\n";
-}
-void db_map(){
-    cout << "----- map -----\n";
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            cout << adj[i][j] << " ";
-        }
-        cout << '\n';
-    }
-    cout << "----- map -----\n";
-}
-void db_visitedmap(){
-    cout << "----- map -----\n";
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            cout << visited[i][j] << " ";
-        }
-        cout << '\n';
-    }
-    cout << "----- map -----\n";
-}
-void db_lazermap(){
-    cout << "----- map -----\n";
-    for(int i=0; i<n; i++){
-        for(int j=0; j<m; j++){
-            cout << lazer_map[i][j] << " ";
-        }
-        cout << '\n';
-    }
-    cout << "----- map -----\n";
-}
-
 void select_target(){
     int highest_target = 0;
     for(int i=0; i<n; i++){
@@ -92,11 +51,8 @@ void select_target(){
             }
         }
     }
-    //cout << tg_i <<","<<tg_j << " : target! \n";
-    //cout << adj[tg_i][tg_j] <<'\n';
 
 }
-
 
 void select_attacker(){
     int lowest_attack = INF;
@@ -132,8 +88,6 @@ void select_attacker(){
         }
     }
     adj[at_i][at_j] += (n+m);
-    //cout << at_i <<","<<at_j << " : attacker! \n";
-    //cout << adj[at_i][at_j] <<'\n';
 }
 
 void update_lastadj(){
@@ -190,10 +144,8 @@ bool lazer_attack(){
     lazer_map[at_i][at_j] = 1;
     bfs();
     if(!visited[at_i][at_j]) return false;
-    //db_visitedmap();
     int ii = at_i;
     int jj = at_j;
-    
     while(1){
         int shortest_dis = INF;
         int best_ny = -1;
@@ -217,21 +169,17 @@ bool lazer_attack(){
             if(ii == tg_i && jj == tg_j){ //타겟 도달
                 adj[tg_i][tg_j] = max(0, adj[tg_i][tg_j] - (adj[at_i][at_j])); //타겟
                 last_target[tg_i][tg_j] = t; //공격 대상
-                //cout << tg_i <<"," << tg_j << " : is attacked >> " << (adj[at_i][at_j]) << '\n';
                 return true;
             }
             else {
                 adj[ii][jj] = max(0, adj[ii][jj] - (adj[at_i][at_j]) / 2); //지나가는 포탑
                 last_target[ii][jj] = t; //공격 대상
-                //cout << ii <<"," << jj << " : is attacked >> " << (adj[at_i][at_j]) / 2 << '\n';
             }
         }
-        
         if(best_ny == -1){ //경로없으면
             return false;
         }
     }
-    
     return true;
 }
 
@@ -242,7 +190,6 @@ void check_potton(){
         for(int j=0;j<m;j++){
             if(adj[i][j] > 0 && last_target[i][j] != t && last_attack[i][j] != t){//공격 x 부서지지않은 포탑중
                 adj[i][j]++;
-                //cout << i << "," << j << "heal \n";
             }
             if(adj[i][j] != 0){
                 cnt++; //부서지지않은 포탑
@@ -253,7 +200,6 @@ void check_potton(){
 
 }
 
-
 int main(){
     cin >> n >> m >> k;    
     for(int i=0;i<n;i++){
@@ -261,33 +207,20 @@ int main(){
             cin >> adj[i][j];
         }
     }
-
     fill(&last_attack[0][0], &last_attack[0][0]+11*11, 0); //0턴에 공격한 경험 있음
     fill(&last_target[0][0], &last_target[0][0]+11*11, 0); //0턴에 공격한 경험 있음
     for(t=1; t<=k; t++){
         // 1. 공격자 선정
-        //db_last_adj();
-        //db_map();
-
         select_attacker();
         select_target();
-        
         update_lastadj(); //최근 공격자 맵 업데이트
-
         //2. 공격자의 공격
         if(!lazer_attack()){ //불가능시 포탄공격
-            //db_map();
-            //cout << "potton attack! \n";
             potton_attack();
-            //db_map();
         }
-        //3. 포탑 부서짐 - 자동
+        // 3. 포탑 부서짐
         // 4. 포탑 정비
-        
         check_potton();
-        // cout << " ----" << t << "----\n";
-        // db_map();
-        // db_last_adj();
         if(cnt == 1) break; //부서지지않은 포탑이 1개면 종료
     }
     
