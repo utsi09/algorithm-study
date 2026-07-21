@@ -22,7 +22,6 @@ void losers_move(int loser_idx){
   loser.gun = 0; //총 내려놓기
   int ny = loser.r + dy[loser.d];
   int nx = loser.c + dx[loser.d];
-  //cout << loser_idx << " >> first !! player's move : " << ny << ","<< nx <<'\n';
   while(1){
     bool danger_checker = false;
     // 다른 플레이어와 만나는지 검사
@@ -35,7 +34,6 @@ void losers_move(int loser_idx){
     }
     //격자를 벗어나거나 다른 플레이어있으면 90도로 방향을 틀어서 1칸 이동
     if(ny<0 || nx<0 || ny>=n || nx>=n || danger_checker == true){ 
-      //cout << loser_idx << " >> change!! player's move : " << ny << ","<< nx <<'\n';
       loser.d = (loser.d + 1) % 4;
       ny = loser.r + dy[loser.d];
       nx = loser.c + dx[loser.d];
@@ -44,7 +42,6 @@ void losers_move(int loser_idx){
   }
   loser.r = ny;
   loser.c = nx;
-  //cout << loser_idx << " >> loser player's move : " << ny << ","<< nx <<'\n';
   if(adj[ny][nx].top() > loser.gun){ //내총보다 더 쎈총있으면 교체
       int my_gun = loser.gun;
       adj[ny][nx].push(my_gun);
@@ -55,17 +52,14 @@ void losers_move(int loser_idx){
 
 void move_player(){
   for(int i=0; i<players.size(); i++){ //각 플레이어 이동
-    //cout << "start player : " << i <<'\n';
     player& me = players[i];
     int ny = me.r + dy[me.d];
     int nx = me.c + dx[me.d];
     
-    //cout << "move : " <<ny<<","<<nx <<"\n";
     if(ny<0 || nx<0 || ny>=n || nx>=n){ //격자를 벗어날경우 정반대로 방향을 틀어서 1칸 이동
       me.d = (me.d + 2) % 4;
       ny = me.r + dy[me.d];
       nx = me.c + dx[me.d];
-      //cout << "out!! move : " <<ny<<","<<nx <<"\n";
     }
 
     
@@ -80,8 +74,6 @@ void move_player(){
       player& other = players[j];
       if(me.r == other.r && me.c == other.c){ // 다른 플레이어와 만나면
         other_checker = true;
-        //cout << "me : " << me.r<<","<<me.c <<"\n";
-        //cout << j << " : other, boom!! he is at : " <<other.r<<","<<other.c << "\n";
         if(me.power + me.gun > other.power + other.gun){ //내가 더 쎄면
           winner_idx = i;
           loser_idx = j;
@@ -100,11 +92,6 @@ void move_player(){
             loser_idx = i;
           }
         }
-        //이긴 플레이어는 각 플레이어의 초기 능력치와 가지고 있는 총의 공격력의 합의 차이만큼을 포인트로 획득하게 됩니다.
-        // cout <<"[ winner ]" << winner_idx << " : " << players[winner_idx].power+players[winner_idx].gun << " vs "; 
-        // cout <<"[ loser ]"<< loser_idx << " : " << players[loser_idx].power+players[loser_idx].gun << '\n'; 
-        // cout <<" get " << abs((players[winner_idx].power+players[winner_idx].gun) - (players[loser_idx].power+players[loser_idx].gun))<< '\n'; 
-
         players[winner_idx].score += abs((players[winner_idx].power+players[winner_idx].gun) - (players[loser_idx].power+players[loser_idx].gun)); 
         losers_move(loser_idx);
       }
@@ -114,21 +101,17 @@ void move_player(){
 
     if(other_checker && adj[win_r][win_c].top() > 0){ //내총보다 더 쎈총있으면 교체
       if(players[winner_idx].gun < adj[win_r][win_c].top()){
-        //cout << "change gun " << players[winner_idx].gun << " > " << adj[win_r][win_c].top() <<'\n';
         int my_gun = players[winner_idx].gun;
         adj[win_r][win_c].push(players[winner_idx].gun);
         players[winner_idx].gun = adj[win_r][win_c].top();
         adj[win_r][win_c].pop();
-        //cout << "remain... gun " << adj[win_r][win_c].top() <<'\n';
       }
     }
     if(other_checker == false && me.gun < adj[ny][nx].top()){
-      //cout << "change gun " << me.gun << " > " << adj[ny][nx].top() <<'\n';
       int my_gun = me.gun;
       adj[ny][nx].push(me.gun);
       me.gun = adj[ny][nx].top();
       adj[ny][nx].pop();
-      //cout << "remain... gun " << adj[ny][nx].top() <<'\n';
     }
   }
   return;
@@ -152,10 +135,7 @@ int main(){
   }
 
   for(int t=0; t<k; t++){
-    //cout << "----------" << t << "--------\n";
     move_player();
-    
-  // cout <<'\n';
   }
   for(int i=0; i<players.size(); i++){
     cout <<players[i].score << " ";
