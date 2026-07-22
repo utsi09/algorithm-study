@@ -8,11 +8,6 @@ int dx[4] = {0,0,-1,1};
 int score = 0;
 vector<pair<int,int>> tails; //각 팀별 꼬리들 저장
 
-// void_db_ball(){
-
-  
-// }
-
 void db_map(){
   cout <<"--- map --- \n";
   for(int i=0; i<n; i++){
@@ -25,18 +20,6 @@ void db_map(){
   cout <<"--- map --- \n";
 }
 
-
-/* 
-
-1. 링이 아닐경우
-    4가 아닌쪽으로 밀고 가기
-    큐 끝나면 들고있는거 headr 즉 4엿던 곳에 넣기
-
-2. 링일 경우
-    1이 있으면 링으로 확정
-    2쪽으로 밀고 가기 
-    끝나면 tail 이었던 곳에 1넣기
-*/
 pair<int,int> move_bfs(int tail_r, int tail_c){
   int value = adj[tail_r][tail_c];
   pair<int,int> tail_move;
@@ -51,25 +34,20 @@ pair<int,int> move_bfs(int tail_r, int tail_c){
     int ii = q.front().first;
     int jj = q.front().second;
     q.pop();
-    //cout <<  ii <<"," << jj <<" test\n";
     for(int dd=0; dd<4; dd++){
       int ny = ii + dy[dd];
       int nx = jj + dx[dd];
       if(ny<0 || nx<0 || ny>=n || nx>=n || visited[ny][nx] || adj[ny][nx] == 0) continue;
       if(ii == tail_r&& jj == tail_c && adj[ny][nx] == 1){ //첫 스타트인데 1과 연결돼있으면 링 형태
-        //cout << "ring! \n";
         is_ring = true;
         continue;
       }
       if(adj[ny][nx] == 4){ //이동하려는 곳이 4면 스킵
-        //cout << "4! \n";
         head_r = ny; //헤드가 이동할 4 저장
         head_c = nx;
         continue;
       }
       if(value == 3){
-        //cout << "3! \n";
-        //cout << ny <<"," << nx<< '\n';
         tail_move.first = ny;
         tail_move.second = nx;
       }
@@ -87,7 +65,6 @@ pair<int,int> move_bfs(int tail_r, int tail_c){
   if(is_ring){
     adj[tail_r][tail_c] = 1;
   }
-  //cout << tail_move.first <<"," << tail_move.second << " : real nmove\n";
   return tail_move;
 }
 
@@ -96,9 +73,7 @@ void move_team(){
   
   for(pair<int,int>& tail : tails){
     memset(visited, 0, sizeof(visited)); //팀마다 초기화
-    //cout << tail.first <<","<<tail.second << ">>";
     tail = move_bfs(tail.first, tail.second); //팀이동
-    //cout << tail.first <<","<<tail.second << "\n";
   }
 
 
@@ -150,9 +125,7 @@ int get_order(int hit_r, int hit_c, int head_r, int head_c){
         if(r == hit_r && c == hit_c){
             return order;
         }
-
         check[r][c] = true;
-
         for(int d = 0; d < 4; d++){
             int nr = r + dy[d];
             int nc = c + dx[d];
@@ -185,22 +158,9 @@ void move_ball(int t){
   int ball_r = -1;
   int ball_c = -1;
   int i=0; int j=0;
-  //cout << t << " : t || "<< turn << ": turn \n";
 
   if(turn == 0){
     i = t % (n);
-
-    // cout <<"--- ball --- \n";
-    //   for(int iii=0; iii<n; iii++){
-    //     for(int j=0; j<n; j++){
-    //       if(iii == i) cout << "B" << " ";
-    //       else cout << "0" << " ";
-    //     }
-    //     cout << '\n';
-      
-    //   }
-    //   cout <<"--- ball --- \n";
-
     for(j=0; j<n; j++){
       if(adj[i][j] != 0 && adj[i][j] < 4){ //사람이 공에 맞으면
         ball_r = i;
@@ -212,18 +172,6 @@ void move_ball(int t){
   
   else if(turn == 1){
     j = t % (n);
-
-    // cout <<"--- ball --- \n";
-    //   for(int i=0; i<n; i++){
-    //     for(int jjj=0; jjj<n; jjj++){
-    //       if(jjj == j) cout << "B" << " ";
-    //       else cout << "0" << " ";
-    //     }
-    //     cout << '\n';
-      
-    //   }
-    // cout <<"--- ball --- \n";
-
       for(int i=n-1; i>=0; i--){
         if(adj[i][j] != 0 && adj[i][j] < 4){ //사람이 공에 맞으면
           ball_r = i;
@@ -235,18 +183,6 @@ void move_ball(int t){
   
   else if(turn == 2){
     i = n-1-(t % (n));
-
-    // cout <<"--- ball --- \n";
-    //   for(int iii=0; iii<n; iii++){
-    //     for(int j=0; j<n; j++){
-    //       if(iii == i) cout << "B" << " ";
-    //       else cout << "0" << " ";
-    //     }
-    //     cout << '\n';
-      
-    //   }
-    // cout <<"--- ball --- \n";
-
     for(int j=n-1; j>=0; j--){
       if(adj[i][j] != 0 && adj[i][j] < 4){ //사람이 공에 맞으면
         ball_r = i;
@@ -258,16 +194,6 @@ void move_ball(int t){
 
   else if(turn == 3){
     j = n - 1 - (t % (n));
-    // cout <<"--- ball --- \n";
-    // for(int i=0; i<n; i++){
-    //   for(int jjj=0; jjj<n; jjj++){
-    //     if(jjj == j) cout << "B" << " ";
-    //     else cout << "0" << " ";
-    //   }
-    //   cout << '\n';
-    
-    // }
-    // cout <<"--- ball --- \n";
       for(int i=0; i<n; i++){
         if(adj[i][j] != 0 && adj[i][j] < 4){ //사람이 공에 맞으면
           ball_r = i;
@@ -276,12 +202,9 @@ void move_ball(int t){
       }
     }
   }
-  //cout << ball_r << "," << ball_c << " : boom! \n";
   if(ball_r != -1 && ball_c != -1){
     memset(visited, 0, sizeof(visited));
     vector<pair<int,int>> ret = find_team(ball_r,ball_c);
-    //cout << ret[0].first << "," << ret[0].second << ": head\n";
-    //cout << ret[1].first << "," << ret[1].second << ": tail\n";
     int order = get_order(ball_r, ball_c, ret[0].first, ret[0].second);
     score += order * order;
 
@@ -289,7 +212,6 @@ void move_ball(int t){
       if(tail.first == ret[1].first && tail.second == ret[1].second){
         tail.first = ret[0].first;
         tail.second = ret[0].second;
-        //cout << tail.first << "," << tail.second << ":changed\n";
         break;
       }
     }
@@ -312,9 +234,7 @@ int main(){
   for(int t=0; t<k; t++){
     // 1. 각 팀의 이동
     move_team();
-    //db_map();
     move_ball(t);
-    //db_map();
   }
   cout <<score;
 
