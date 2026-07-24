@@ -2,7 +2,11 @@
 
 알고리즘 문제 풀이와 학습한 개념을 기록하는 저장소입니다.
 
-https://www.youtube.com/@TaewookSKKU
+문제를 푸는 과정과 라이브 코딩 영상은 아래 유튜브 채널에 가끔 업로드합니다.
+
+🎥 [TaewookSKKU 유튜브 채널](https://www.youtube.com/@TaewookSKKU)
+
+
 
 ## 저장소 활동
 
