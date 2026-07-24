@@ -2,6 +2,8 @@
 
 알고리즘 문제 풀이와 학습한 개념을 기록하는 저장소입니다.
 
+https://www.youtube.com/@TaewookSKKU
+
 ## 저장소 활동
 
 ![GitHub commit activity](https://img.shields.io/github/commit-activity/m/utsi09/algorithm-study?label=최근%20한달%20커밋)
