@@ -5,7 +5,7 @@ using namespace std;
 int visited[10];
 
 
-int rpg(int k, auto dungeons){ //현재 hp
+int rpg(int k, auto& dungeons){ //현재 hp
     int ret = 0;
     for(int i=0; i<dungeons.size(); i++){
         if(visited[i] || k < dungeons[i][0]) continue; //최소필요피로도 검사
