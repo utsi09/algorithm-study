@@ -30,7 +30,7 @@ int main(){
             q.push(tmp); //일단 큐에 넣기
             pq.pop(); 
         }
-        while(q.size()){ //큐에 있는 것들 모두 pq의 최전선 day와 동일하게 세팅
+        while(q.size()){ //큐에 있는 것들 재사용 가능하도록 세팅
             pq.push({t-1, q.front()});
             q.pop();
         }
