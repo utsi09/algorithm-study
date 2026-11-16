@@ -1,145 +1,147 @@
 #include <bits/stdc++.h>
 using namespace std;
 
+int dx[4] = {-1, 0, 1, 0};
+int dy[4] = {0, 1, 0, -1};
 int n,m,k;
-int dy[4] = {-1,0,1,0}; //상우하좌
-int dx[4] = {0,1,0,-1};
 priority_queue<int> adj[21][21];
 
-struct player{
-  int r,c;
-  int score = 0;
-  int d;//방향
-  int power;
-  int gun = 0;
+struct player
+{
+    int x,y,d,s;
+    int gun=0;
+    int score=0;
 };
 vector<player> players;
 
+void db_map(){
+    cout << "------- map -----\n";
+    for(int i=0; i<players.size(); i++){
+        cout << "player "<<i<<": " <<players[i].x << "," << players[i].y <<'\n';
+    }
+    cout << "------- map end -----\n";
+}
 
-void losers_move(int loser_idx){
-  player& loser = players[loser_idx];
-  adj[loser.r][loser.c].push(loser.gun);
-  loser.gun = 0; //총 내려놓기
-  int ny = loser.r + dy[loser.d];
-  int nx = loser.c + dx[loser.d];
-  while(1){
-    bool danger_checker = false;
-    // 다른 플레이어와 만나는지 검사
-    for(int j=0; j<players.size(); j++){
-      if(loser_idx==j) continue;
-      player& other = players[j];
-      if(ny == other.r && nx == other.c){ //이동할곳에 겹치는지
-        danger_checker = true;
-      }
+
+void init(){
+    cin >> n >> m >> k;
+    for(int i=0; i<n; i++){
+        for(int j=0; j<n; j++){
+            int tmp; cin >> tmp;
+            adj[i][j].push(tmp);
+        }
     }
-    //격자를 벗어나거나 다른 플레이어있으면 90도로 방향을 틀어서 1칸 이동
-    if(ny<0 || nx<0 || ny>=n || nx>=n || danger_checker == true){ 
-      loser.d = (loser.d + 1) % 4;
-      ny = loser.r + dy[loser.d];
-      nx = loser.c + dx[loser.d];
+
+    for(int i=0; i<m; i++){
+        player tmp;
+        cin >> tmp.x >> tmp.y >> tmp.d >> tmp.s;
+        tmp.x--; tmp.y--;
+        players.push_back(tmp);
     }
-    else break;
-  }
-  loser.r = ny;
-  loser.c = nx;
-  if(adj[ny][nx].top() > loser.gun){ //내총보다 더 쎈총있으면 교체
-      int my_gun = loser.gun;
-      adj[ny][nx].push(my_gun);
-      loser.gun = adj[ny][nx].top();
-      adj[ny][nx].pop();
-  }
 }
 
 void move_player(){
-  for(int i=0; i<players.size(); i++){ //각 플레이어 이동
-    player& me = players[i];
-    int ny = me.r + dy[me.d];
-    int nx = me.c + dx[me.d];
-    
-    if(ny<0 || nx<0 || ny>=n || nx>=n){ //격자를 벗어날경우 정반대로 방향을 틀어서 1칸 이동
-      me.d = (me.d + 2) % 4;
-      ny = me.r + dy[me.d];
-      nx = me.c + dx[me.d];
+    for(int p=0; p<players.size(); p++){
+        //cout << players[p].x <<","<<players[p].y <<">>>";
+        int ny = players[p].y + dy[players[p].d];
+        int nx = players[p].x + dx[players[p].d];
+        if(ny<0 || nx<0 || ny>=n || nx>=n){ //격자 벗어나면 방향 반대로
+            players[p].d = (players[p].d + 2)%4;
+            ny = players[p].y + dy[players[p].d];
+            nx = players[p].x + dx[players[p].d];
+        }
+        players[p].y = ny; //바로 이동
+        players[p].x = nx;
+        //cout << nx <<","<< ny <<'\n';
+        int winner = p;
+        int loser = -1;
+        int prize = 0;
+        // 플레이어와 조우
+        for(int pp=0; pp<players.size(); pp++){
+            if(pp == p) continue;
+            if(ny == players[pp].y && nx == players[pp].x){ //충돌
+                //cout << "boom\n";
+                int my_power = players[p].s + players[p].gun;
+                int your_power = players[pp].s + players[pp].gun;
+                //cout << my_power << "vs" << your_power <<'\n';
+                prize = abs(my_power - your_power);
+                //승자 판정
+                if(my_power > your_power){
+                    winner = p;
+                    loser = pp;
+                }
+                else if(my_power < your_power){
+                    winner = pp;
+                    loser = p;
+                }
+                else{
+                    if(players[p].s > players[pp].s){
+                        winner = p;
+                        loser = pp;
+                    }
+                    else{
+                        winner = pp;
+                        loser = p;
+                    }
+                }
+                break;
+            }
+        }
+        // cout << "winner : " << winner <<'\n';
+        // cout << "loser : " << loser <<'\n';
+        players[winner].score += prize; 
+        //cout << "prize = " << prize <<'\n';
+        if(loser != -1){ //충돌이 있었으면
+            //패자 : 총 내려놓고 방향대로 이동한후 충돌이나 격자밖일시 90도씩 회전하며 계속 이동
+            adj[nx][ny].push(players[loser].gun); //내려놓고
+            players[loser].gun = 0;
+            for(int dd=0; dd<4; dd++){
+                int tmpd = (players[loser].d + dd) % 4;
+                int tmpx = players[loser].x + dx[tmpd];
+                int tmpy = players[loser].y + dy[tmpd];
+                if(tmpx<0 || tmpy<0 || tmpx>=n || tmpy>=n) continue; //오버플로우
+                bool checker = true;
+                for(int tmpp=0; tmpp<players.size(); tmpp++){
+                    if(tmpp == loser) continue; //자기자신제외
+                    if(players[tmpp].y == tmpy && players[tmpp].x == tmpx) checker = false; //충돌
+                }
+                if(checker){
+                    players[loser].x = tmpx;
+                    players[loser].y = tmpy;
+                    players[loser].d = tmpd;
+                    //cout << "loser " << loser << " : d >> " << tmpd << '\n';
+                    if(adj[tmpx][tmpy].size()){ //총있으면
+                        players[loser].gun = adj[tmpx][tmpy].top(); //들고
+                        adj[tmpx][tmpy].pop(); //맵위에선 총 삭제
+                    }
+                    break;
+                }
+            }
+        }
+        
+        //고정 : 승자는 총줍기
+        if(adj[nx][ny].size()){
+            adj[nx][ny].push(players[winner].gun); //내려놓고
+            players[winner].gun = adj[nx][ny].top(); //들고
+            adj[nx][ny].pop(); //맵위에선 총 삭제
+        }
+        
     }
 
-    
-    me.r = ny;
-    me.c = nx;
-    //이동 상호작용
-    int winner_idx = -1;
-    int loser_idx = -1;
-    bool other_checker = false;
-    for(int j=0; j<players.size(); j++){
-      if(i==j) continue;
-      player& other = players[j];
-      if(me.r == other.r && me.c == other.c){ // 다른 플레이어와 만나면
-        other_checker = true;
-        if(me.power + me.gun > other.power + other.gun){ //내가 더 쎄면
-          winner_idx = i;
-          loser_idx = j;
-        }
-        else if(me.power + me.gun < other.power + other.gun){ //상대가 더 쎄면
-          winner_idx = j;
-          loser_idx = i;
-        }
-        else{//같으면
-          if(me.power > other.power){ //내 재능 더 세면
-            winner_idx = i;
-            loser_idx = j;
-          }
-          else{  //상대 재능 더 세면
-            winner_idx = j;
-            loser_idx = i;
-          }
-        }
-        players[winner_idx].score += abs((players[winner_idx].power+players[winner_idx].gun) - (players[loser_idx].power+players[loser_idx].gun)); 
-        losers_move(loser_idx);
-      }
-    }
-    int win_r = players[winner_idx].r;
-    int win_c = players[winner_idx].c;
 
-    if(other_checker && adj[win_r][win_c].top() > 0){ //내총보다 더 쎈총있으면 교체
-      if(players[winner_idx].gun < adj[win_r][win_c].top()){
-        int my_gun = players[winner_idx].gun;
-        adj[win_r][win_c].push(players[winner_idx].gun);
-        players[winner_idx].gun = adj[win_r][win_c].top();
-        adj[win_r][win_c].pop();
-      }
-    }
-    if(other_checker == false && me.gun < adj[ny][nx].top()){
-      int my_gun = me.gun;
-      adj[ny][nx].push(me.gun);
-      me.gun = adj[ny][nx].top();
-      adj[ny][nx].pop();
-    }
-  }
-  return;
 }
 
-
 int main(){
-  cin >> n >> m >> k;
-  for(int i=0; i<n; i++){
-    for(int j=0; j<n; j++){
-      int tmp; cin >> tmp;
-      adj[i][j].push(tmp);
-    }
-  }
-  for(int i=0; i<m; i++){
-    player tmp;
-    cin >> tmp.r >> tmp.c >> tmp.d >> tmp.power;
-    tmp.r--;
-    tmp.c--;
-    players.push_back(tmp);
-  }
+    init();
 
-  for(int t=0; t<k; t++){
-    move_player();
-  }
-  for(int i=0; i<players.size(); i++){
-    cout <<players[i].score << " ";
-  }
-  
-  return 0;
+    for(int turn=0; turn<k; turn++){
+        move_player();
+        //db_map();
+    }
+
+    for(player p : players){
+        cout << p.score << " ";
+    }
+
+    return 0;
 }
